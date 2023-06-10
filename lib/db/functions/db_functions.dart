@@ -29,9 +29,10 @@ deleteStudent(int id, BuildContext context) {
   getAllStudents();
 }
 
-Future<void> updateStudent(int id, StudentModel value) async {
-  final studentDB = await Hive.openBox<StudentModel>('student_db');
-
-  await studentDB.putAt(id, value);
+updateStudent(int id, StudentModel value, BuildContext context) {
+  final studentDB = Hive.box<StudentModel>('student_db');
+  BlocProvider.of<HomeBloc>(context)
+      .add(UpdateStudents(newValue: value, stdId: id));
+  studentDB.putAt(id, value);
   getAllStudents();
 }

@@ -13,8 +13,6 @@ import '../../../db/functions/db_functions.dart';
 class ViewStudent extends StatelessWidget {
   ViewStudent({super.key});
 
-  // late Box<StudentModel> studentBox;
-
   // @override
   @override
   Widget build(BuildContext context) {
