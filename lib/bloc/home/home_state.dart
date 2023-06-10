@@ -1,12 +1,12 @@
 part of 'home_bloc.dart';
 
 @immutable
- class HomeState {
+class HomeState {
   final List<StudentModel> studentList;
 
-  const HomeState({required this.studentList});
+  HomeState({required this.studentList});
 }
 
 class HomeInitial extends HomeState {
-  HomeInitial() :super(studentList: []);
+  HomeInitial({required super.studentList});
 }

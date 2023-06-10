@@ -1,150 +1,160 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_sample/bloc/addStudentScreen/bloc/add_image_bloc.dart';
 import 'package:hive_sample/db/functions/db_functions.dart';
 import 'package:hive_sample/db/models/data_model.dart';
 import 'package:image_picker/image_picker.dart';
 
-class AddStudent extends StatefulWidget {
-  const AddStudent({super.key});
+// ignore: must_be_immutable
+class AddStudent extends StatelessWidget {
+  AddStudent({super.key});
 
-  @override
-  State<AddStudent> createState() => _AddStudentState();
-}
-
-class _AddStudentState extends State<AddStudent> {
   final _nameController = TextEditingController();
+
   final _ageController = TextEditingController();
+
   final _phnNoController = TextEditingController();
+  // final context = BuildContext;
+
   String? imagepath;
 
   @override
   Widget build(BuildContext context) {
+    log('Called once');
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Add Student'),
-        ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 50,
-                ),
-                Stack(children: [
-                  CircleAvatar(
-                    backgroundImage: imagepath == null
-                        ? const AssetImage('assets/images/dp.jpg')
-                            as ImageProvider
-                        : FileImage(File(imagepath!)),
-                    radius: 75,
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: InkWell(
-                      child: const Icon(
-                        Icons.add_a_photo_sharp,
-                        size: 30,
-                      ),
-                      onTap: () {
-                        takePhoto();
-                      },
+      appBar: AppBar(
+        title: const Text('Add Student'),
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 50,
+              ),
+              BlocBuilder<AddImageBloc, AddImageState>(
+                builder: (context, state) {
+                  log('Called multiple');
+                  imagepath = state.image;
+                  return Stack(children: [
+                    CircleAvatar(
+                      backgroundImage: imagepath == null
+                          ? const AssetImage('assets/images/dp.jpg')
+                              as ImageProvider
+                          : FileImage(File(imagepath!)),
+                      radius: 75,
                     ),
-                  ),
-                ]),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: _nameController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 3, color: Colors.orange),
-                          borderRadius: BorderRadius.circular(17.0),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: InkWell(
+                        child: const Icon(
+                          Icons.add_a_photo_sharp,
+                          size: 30,
                         ),
-                        hintText: 'name..'),
-                  ),
+                        onTap: () {
+                          takePhoto(context);
+                        },
+                      ),
+                    ),
+                  ]);
+                },
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(width: 3, color: Colors.orange),
+                        borderRadius: BorderRadius.circular(17.0),
+                      ),
+                      hintText: 'name..'),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: _ageController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide: const BorderSide(width: 3),
-                          borderRadius: BorderRadius.circular(17.0),
-                        ),
-                        hintText: 'age...'),
-                    maxLength: 2,
-                    buildCounter: (BuildContext context,
-                            {required int currentLength,
-                            int? maxLength,
-                            bool? isFocused}) =>
-                        null,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextFormField(
+                  controller: _ageController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide: const BorderSide(width: 3),
+                        borderRadius: BorderRadius.circular(17.0),
+                      ),
+                      hintText: 'age...'),
+                  maxLength: 2,
+                  buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          int? maxLength,
+                          bool? isFocused}) =>
+                      null,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: _phnNoController,
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(width: 3, color: Colors.orange),
-                          borderRadius: BorderRadius.circular(17.0),
-                        ),
-                        hintText: 'phone number...'),
-                    maxLength: 10,
-                    keyboardType: TextInputType.number,
-                    buildCounter: (BuildContext context,
-                            {required int currentLength,
-                            int? maxLength,
-                            bool? isFocused}) =>
-                        null,
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: TextFormField(
+                  controller: _phnNoController,
+                  decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderSide:
+                            const BorderSide(width: 3, color: Colors.orange),
+                        borderRadius: BorderRadius.circular(17.0),
+                      ),
+                      hintText: 'phone number...'),
+                  maxLength: 10,
+                  keyboardType: TextInputType.number,
+                  buildCounter: (BuildContext context,
+                          {required int currentLength,
+                          int? maxLength,
+                          bool? isFocused}) =>
+                      null,
                 ),
-                ElevatedButton.icon(
-                    onPressed: () {
-                      addStudentButtonClicked();
-                    },
-                    icon: const Icon(Icons.check),
-                    label: const Text('Add'))
-              ],
-            ),
+              ),
+              ElevatedButton.icon(
+                  onPressed: () {
+                    addStudentButtonClicked(context);
+                  },
+                  icon: const Icon(Icons.check),
+                  label: const Text('Add'))
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
-  Future<void> addStudentButtonClicked() async {
+  Future<void> addStudentButtonClicked(BuildContext context) async {
+//print('$_name $_age');final _name = _nameController.text.trim();
     final _name = _nameController.text.trim();
     final _age = _ageController.text.trim();
     final _phnNo = _phnNoController.text.trim();
 
     if (_name.isEmpty || _age.isEmpty || _phnNo.isEmpty) {
-      showSnackBar();
-    }
-//print('$_name $_age');
-    else {
+      showSnackBar(context);
+    } else {
       final _student = StudentModel(
           name: _name, age: _age, phnNo: _phnNo, image: imagepath!);
-      addStudents(_student);
+      addStudents(_student, context);
       Navigator.of(context).pop();
-      studentAddSnackBar();
+      studentAddSnackBar(context);
     }
   }
 
-  Future<void> takePhoto() async {
+  takePhoto(BuildContext context) async {
     final pickedFile =
         await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      setState(() {
-        imagepath = pickedFile.path;
-      });
+      // imagepath = pickedFile.path;
+      BlocProvider.of<AddImageBloc>(context)
+          .add(AddImage(imagepath: pickedFile.path));
     }
   }
 
-  showSnackBar() {
+  showSnackBar(BuildContext context) {
     var _errMsg = "";
 
     if (imagepath == null &&
@@ -171,7 +181,7 @@ class _AddStudentState extends State<AddStudent> {
     );
   }
 
-  void studentAddSnackBar() {
+  void studentAddSnackBar(BuildContext context) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         behavior: SnackBarBehavior.floating,

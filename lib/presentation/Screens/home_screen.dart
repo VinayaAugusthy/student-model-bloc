@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import 'package:hive_sample/presentation/Screens/widgets/view_students.dart';
@@ -10,8 +9,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     getAllStudents();
-     return  const Scaffold(
-       body:ViewStudent(),
-     );
+    return Scaffold(
+      body: ViewStudent(),
+    );
   }
 }

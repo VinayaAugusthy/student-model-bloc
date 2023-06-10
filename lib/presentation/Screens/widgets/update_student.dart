@@ -8,7 +8,6 @@ import 'package:hive_sample/db/functions/db_functions.dart';
 import 'package:hive_sample/db/models/data_model.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 class UpdateStudent extends StatefulWidget {
   final int index;
 
@@ -60,7 +59,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
     if (_name.isEmpty || _age.isEmpty || _number.isEmpty) {
       return;
     }
-   // print('$_name $_age $_number');
+    // print('$_name $_age $_number');
 
     final _students = StudentModel(
       name: _name,
@@ -90,7 +89,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
         StudentAddBtn(widget.index);
 
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (ctx) => const ViewStudent()),
+            MaterialPageRoute(builder: (ctx) => ViewStudent()),
             (route) => false);
       },
       icon: const Icon(Icons.update_rounded),
@@ -116,8 +115,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
             borderRadius: BorderRadius.circular(50)),
         hintText: hintName,
       ),
-  
-       
+
       // initialValue: 'hintName',
     );
   }
@@ -127,26 +125,27 @@ class _UpdateStudentState extends State<UpdateStudent> {
     required String hintName,
   }) {
     return TextFormField(
-      autofocus: false,
-      controller: myController,
-      cursorColor: Colors.black,
-      style: const TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color.fromRGBO(234, 236, 238, 2),
-        border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(50)),
-        hintText: hintName,
-      ),
-      keyboardType: TextInputType.number,
-      maxLength: 2,
-      buildCounter: (BuildContext context,
-                        {required int currentLength,
-                        int? maxLength,
-                        bool? isFocused}) => null
-      // initialValue: 'hintName',
-    );
+        autofocus: false,
+        controller: myController,
+        cursorColor: Colors.black,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: const Color.fromRGBO(234, 236, 238, 2),
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(50)),
+          hintText: hintName,
+        ),
+        keyboardType: TextInputType.number,
+        maxLength: 2,
+        buildCounter: (BuildContext context,
+                {required int currentLength,
+                int? maxLength,
+                bool? isFocused}) =>
+            null
+        // initialValue: 'hintName',
+        );
   }
 
   Widget textFieldPhoneNum({
@@ -154,26 +153,27 @@ class _UpdateStudentState extends State<UpdateStudent> {
     required String hintName,
   }) {
     return TextFormField(
-      autofocus: false,
-      controller: myController,
-      cursorColor: Colors.black,
-      style: const TextStyle(color: Colors.black),
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: const Color.fromRGBO(234, 236, 238, 2),
-        border: OutlineInputBorder(
-            borderSide: BorderSide.none,
-            borderRadius: BorderRadius.circular(50)),
-        hintText: hintName,
-      ),
-      keyboardType: TextInputType.number,
-      maxLength: 10,
-      buildCounter: (BuildContext context,
-                        {required int currentLength,
-                        int? maxLength,
-                        bool? isFocused}) => null
-      // initialValue: 'hintName',
-    );
+        autofocus: false,
+        controller: myController,
+        cursorColor: Colors.black,
+        style: const TextStyle(color: Colors.black),
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: const Color.fromRGBO(234, 236, 238, 2),
+          border: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(50)),
+          hintText: hintName,
+        ),
+        keyboardType: TextInputType.number,
+        maxLength: 10,
+        buildCounter: (BuildContext context,
+                {required int currentLength,
+                int? maxLength,
+                bool? isFocused}) =>
+            null
+        // initialValue: 'hintName',
+        );
   }
 
   Widget dpImage() {
@@ -201,7 +201,6 @@ class _UpdateStudentState extends State<UpdateStudent> {
   }
 
   Widget szdBox = const SizedBox(height: 20);
-
 
   Widget build(BuildContext context) {
     final student = studenBox.getAt(widget.index) as StudentModel;
