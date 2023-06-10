@@ -14,5 +14,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       listStudents.add(event.list);
       return emit(HomeState(studentList: listStudents));
     });
+    on<DeleteStudents>((event, emit) {
+      listStudents.removeAt(event.stdId);
+      return emit(HomeState(studentList: listStudents));
+    });
   }
 }

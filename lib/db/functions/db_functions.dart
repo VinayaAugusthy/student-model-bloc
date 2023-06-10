@@ -22,9 +22,10 @@ getAllStudents() {
   listStudents.addAll(studentDB.values);
 }
 
-deleteStudent(int id) async {
-  final studentDB = await Hive.openBox<StudentModel>('student_db');
-  await studentDB.deleteAt(id);
+deleteStudent(int id, BuildContext context) {
+  final studentDB = Hive.box<StudentModel>('student_db');
+  BlocProvider.of<HomeBloc>(context).add(DeleteStudents(stdId: id));
+  studentDB.deleteAt(id);
   getAllStudents();
 }
 

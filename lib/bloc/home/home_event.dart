@@ -9,6 +9,10 @@ class AddStudents extends HomeEvent {
   AddStudents({required this.list});
 }
 
-class DeleteStudents extends HomeEvent {}
+class DeleteStudents extends HomeEvent {
+  final int stdId;
+
+  DeleteStudents({required this.stdId});
+}
 
 class UpdateStudents extends HomeEvent {}

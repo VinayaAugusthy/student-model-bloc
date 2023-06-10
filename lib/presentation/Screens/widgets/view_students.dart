@@ -53,7 +53,7 @@ class ViewStudent extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => UpdateStudent(index: index),
+                                builder: (_) => UpdateStudent(index: data.id!),
                               ),
                             );
                           },
@@ -107,7 +107,7 @@ class ViewStudent extends StatelessWidget {
         actions: [
           TextButton(
               onPressed: () {
-                deleteStudent(key);
+                deleteStudent(key, context);
                 Navigator.of(context).pop(ctx);
               },
               child: const Text(
