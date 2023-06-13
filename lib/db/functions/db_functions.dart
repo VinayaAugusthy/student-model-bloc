@@ -22,17 +22,17 @@ getAllStudents() {
   listStudents.addAll(studentDB.values);
 }
 
-deleteStudent(int id, BuildContext context) {
-  final studentDB = Hive.box<StudentModel>('student_db');
+deleteStudent(int id, BuildContext context) async {
+  final studentDB = await Hive.box<StudentModel>('student_db');
   BlocProvider.of<HomeBloc>(context).add(DeleteStudents(stdId: id));
-  studentDB.deleteAt(id);
+  await studentDB.deleteAt(id);
   getAllStudents();
 }
 
-updateStudent(int id, StudentModel value, BuildContext context) {
-  final studentDB = Hive.box<StudentModel>('student_db');
-  BlocProvider.of<HomeBloc>(context)
-      .add(UpdateStudents(newValue: value, stdId: id));
-  studentDB.putAt(id, value);
-  getAllStudents();
-}
+// updateStudent(int id, StudentModel value, BuildContext context) {
+//   final studentDB = Hive.box<StudentModel>('student_db');
+//   BlocProvider.of<HomeBloc>(context)
+//       .add(UpdateStudents(newList: value, stdId: id));
+//   studentDB.putAt(id, value);
+//   getAllStudents();
+// }

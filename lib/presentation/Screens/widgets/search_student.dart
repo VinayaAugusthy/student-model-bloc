@@ -1,29 +1,29 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:hive_sample/bloc/search/bloc/search_bloc.dart';
+import 'package:hive_sample/bloc/update_image/bloc/update_image_bloc.dart';
+import 'package:hive_sample/db/functions/db_functions.dart';
 import 'package:hive_sample/presentation/Screens/widgets/details.dart';
 
-import 'package:hive_sample/db/models/data_model.dart';
+import '../../../db/models/data_model.dart';
 
-class SearchStudent extends StatefulWidget {
-  const SearchStudent({super.key});
+class SearchStudent extends StatelessWidget {
+  SearchStudent({super.key});
 
-  @override
-  State<SearchStudent> createState() => _SearchStudentState();
-}
+  final _searchController = TextEditingController();
 
-class _SearchStudentState extends State<SearchStudent> {
-   final _searchController = TextEditingController();
-
-   
   List<StudentModel> studentList =
       Hive.box<StudentModel>('student_db').values.toList();
 
   late List<StudentModel> studentDisplay = List<StudentModel>.from(studentList);
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    BlocProvider.of<SearchBloc>(context)
+        .add(Search(value: '', student: listStudents));
+    return Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(15.0),
@@ -45,60 +45,55 @@ class _SearchStudentState extends State<SearchStudent> {
                   border: OutlineInputBorder(
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.circular(50)),
-                  hintText: 'search',
                 ),
                 onChanged: (value) {
-                  _searchStudent(value);
+                  BlocProvider.of<SearchBloc>(context)
+                      .add(Search(value: value, student: listStudents));
                 },
               ),
-              Expanded(
-                child: studentDisplay.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: studentDisplay.length,
-                        itemBuilder: (context, index) {
-                          // final data = studentList[index];
-                          File img = File(studentDisplay[index].image);
-                          return ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage: FileImage(img),
-                            ),
-                            title: Text(studentDisplay[index].name),
-                            onTap: (() {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Details(
-                                    passValue: studentDisplay[index],
-                                    passId: index,
-                                  ),
+              BlocBuilder<SearchBloc, SearchState>(
+                builder: (context, state) {
+                  return Expanded(
+                    child: listStudents.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: state.modelList.length,
+                            itemBuilder: (context, index) {
+                              // final data = studentList[index];
+                              File img = File(state.modelList[index].image);
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundImage: FileImage(img),
                                 ),
+                                title: Text(state.modelList[index].name),
+                                onTap: (() {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Details(
+                                        passValue: state.modelList[index],
+                                        passId: index,
+                                      ),
+                                    ),
+                                  );
+                                }),
                               );
-                            }),
-                          );
-                        },
-                      )
-                    : const Center(
-                        child: Text(
-                          'No match found',
-                          style: TextStyle(fontSize: 20),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                            },
+                          )
+                        : const Center(
+                            child: Text(
+                              'No match found',
+                              style: TextStyle(fontSize: 20),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                  );
+                },
               )
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _searchStudent(String value) {
-    setState(() {
-      studentDisplay = studentList
-          .where((element) =>
-              element.name.toLowerCase().contains(value.toLowerCase()))
-          .toList();
-    });
   }
 
   void clearText() {

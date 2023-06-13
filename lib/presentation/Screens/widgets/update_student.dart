@@ -1,86 +1,67 @@
 import 'dart:io';
-
-import 'package:flutter/material.dart';
-
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_sample/bloc/update_image/bloc/update_image_bloc.dart';
 import 'package:hive_sample/presentation/Screens/widgets/view_students.dart';
-import 'package:hive_sample/db/functions/db_functions.dart';
-import 'package:hive_sample/db/models/data_model.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../../db/functions/db_functions.dart';
+import '../../../db/models/data_model.dart';
+
+String tempimg = '';
+
+// ignore: must_be_immutable
 class UpdateStudent extends StatefulWidget {
-  final int index;
+  UpdateStudent(
+      {Key? key,
+      // required this.passValue01,
+      required this.index,
+      required this.passValue})
+      : super(key: key);
 
-  const UpdateStudent({super.key, required this.index});
+  StudentModel passValue;
+  int index;
 
   @override
   State<UpdateStudent> createState() => _UpdateStudentState();
 }
 
 class _UpdateStudentState extends State<UpdateStudent> {
-  late TextEditingController _idController;
-  late TextEditingController _nameController;
-  late TextEditingController _ageController;
-  late TextEditingController _numberController;
+  late final _nameController =
+      TextEditingController(text: widget.passValue.name);
 
-  int id = 0;
-  String? name;
-  int age = 0;
-  String? imagepath;
+  late final _ageController = TextEditingController(text: widget.passValue.age);
 
-  late Box<StudentModel> studenBox;
-  late StudentModel student;
+  late final _numController =
+      TextEditingController(text: widget.passValue.phnNo);
 
-  @override
-  void initState() {
-    super.initState();
+  String? imagePath;
 
-    studenBox = Hive.box('student_db');
+  // final ImagePicker _picker = ImagePicker();
 
-    _idController = TextEditingController();
-    _nameController = TextEditingController();
-    _ageController = TextEditingController();
-    _numberController = TextEditingController();
-
-    student = studenBox.getAt(widget.index) as StudentModel;
-
-    _idController.text = student.id.toString();
-    _nameController.text = student.name.toString();
-    _ageController.text = student.age.toString();
-    _numberController.text = student.phnNo.toString();
-  }
+//function or widget==================================================
 
   Future<void> StudentAddBtn(int index) async {
-    final _name = _nameController.text.trim();
-    final _age = _ageController.text.trim();
-    final _number = _numberController.text.trim();
+    final name = _nameController.text.trim();
+    final age = _ageController.text.trim();
+    final number = _numController.text.trim();
+
     // final _image = imagePath;
 
-    if (_name.isEmpty || _age.isEmpty || _number.isEmpty) {
-      return;
-    }
-    // print('$_name $_age $_number');
+    // if (name.isEmpty) {
+    //   return;F
+    // }
 
     final _students = StudentModel(
-      name: _name,
-      age: _age,
-      phnNo: _number,
-      image: imagepath ?? student.image,
+      name: name,
+      age: age,
+      phnNo: number,
+      image: imagePath ?? widget.passValue.image,
     );
-    final studentDataB = await Hive.openBox<StudentModel>('student_db');
-    studentDataB.putAt(index, _students);
+    final studentDB = await Hive.openBox<StudentModel>('Student_db');
+    studentDB.putAt(index, _students);
     getAllStudents();
-  }
-
-  Future<void> takePhoto() async {
-    // ignore: non_constant_identifier_names
-    final PickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (PickedFile != null) {
-      setState(() {
-        imagepath = PickedFile.path;
-      });
-    }
   }
 
   Widget elavatedbtn() {
@@ -92,109 +73,56 @@ class _UpdateStudentState extends State<UpdateStudent> {
             MaterialPageRoute(builder: (ctx) => ViewStudent()),
             (route) => false);
       },
-      icon: const Icon(Icons.update_rounded),
-      label: const Text('Update'),
+      icon: Icon(Icons.update_rounded),
+      label: Text('Update'),
     );
   }
 
-  Widget textFieldName({
-    required TextEditingController myController,
-    required String hintName,
-  }) {
+  Widget textFieldName(
+      {required TextEditingController myController, required String hintName}) {
     return TextFormField(
-      // initialValue: widget.passValueProfile.name,
       autofocus: false,
       controller: myController,
       cursorColor: Colors.black,
-      style: const TextStyle(color: Colors.black),
+      style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         filled: true,
-        fillColor: const Color.fromRGBO(234, 236, 238, 2),
+        fillColor: Color.fromRGBO(234, 236, 238, 2),
         border: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(50)),
         hintText: hintName,
+        // counterText: myController.text
       ),
-
       // initialValue: 'hintName',
     );
-  }
-
-  Widget textFieldNum({
-    required TextEditingController myController,
-    required String hintName,
-  }) {
-    return TextFormField(
-        autofocus: false,
-        controller: myController,
-        cursorColor: Colors.black,
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: const Color.fromRGBO(234, 236, 238, 2),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(50)),
-          hintText: hintName,
-        ),
-        keyboardType: TextInputType.number,
-        maxLength: 2,
-        buildCounter: (BuildContext context,
-                {required int currentLength,
-                int? maxLength,
-                bool? isFocused}) =>
-            null
-        // initialValue: 'hintName',
-        );
-  }
-
-  Widget textFieldPhoneNum({
-    required TextEditingController myController,
-    required String hintName,
-  }) {
-    return TextFormField(
-        autofocus: false,
-        controller: myController,
-        cursorColor: Colors.black,
-        style: const TextStyle(color: Colors.black),
-        decoration: InputDecoration(
-          filled: true,
-          fillColor: const Color.fromRGBO(234, 236, 238, 2),
-          border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(50)),
-          hintText: hintName,
-        ),
-        keyboardType: TextInputType.number,
-        maxLength: 10,
-        buildCounter: (BuildContext context,
-                {required int currentLength,
-                int? maxLength,
-                bool? isFocused}) =>
-            null
-        // initialValue: 'hintName',
-        );
   }
 
   Widget dpImage() {
     return Stack(
       children: [
-        CircleAvatar(
-          radius: 75,
-          backgroundImage: imagepath == null
-              ? FileImage(File(student.image))
-              : FileImage(File(imagepath ?? student.image)),
+        BlocBuilder<UpdateImageBloc, UpdateImageState>(
+          builder: (context, state) {
+            tempimg =
+                (tempimg != widget.passValue.image ? state.image : tempimg)!;
+            return CircleAvatar(
+              radius: 75,
+              backgroundImage: imagePath == null
+                  ? FileImage(File(widget.passValue.image))
+                  : FileImage(File(imagePath!)),
+            );
+          },
         ),
         Positioned(
-            bottom: 10,
-            right: 25,
+            bottom: 2,
+            right: 10,
             child: InkWell(
                 child: const Icon(
                   Icons.add_a_photo_rounded,
                   size: 30,
                 ),
                 onTap: () {
-                  takePhoto();
+                  takePhoto(context);
                 })),
       ],
     );
@@ -202,33 +130,37 @@ class _UpdateStudentState extends State<UpdateStudent> {
 
   Widget szdBox = const SizedBox(height: 20);
 
+  @override
   Widget build(BuildContext context) {
-    final student = studenBox.getAt(widget.index) as StudentModel;
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: SingleChildScrollView(
-          child: Column(children: <Widget>[
-            dpImage(),
-            szdBox,
-            textFieldName(
-              myController: _nameController,
-              hintName: student.name,
-            ),
-            szdBox,
-            textFieldNum(myController: _ageController, hintName: student.age),
-            szdBox,
-            textFieldPhoneNum(
-                myController: _numberController, hintName: student.phnNo),
-            szdBox,
-            elavatedbtn(),
-          ]),
+        appBar: AppBar(
+          title: const Text('Edit'),
         ),
-      ),
-    );
+        body: Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: SingleChildScrollView(
+            child: Column(children: <Widget>[
+              dpImage(),
+              szdBox,
+              textFieldName(myController: _nameController, hintName: 'name'),
+              szdBox,
+              textFieldName(myController: _ageController, hintName: 'age'),
+              szdBox,
+              textFieldName(myController: _numController, hintName: 'number'),
+              szdBox,
+              elavatedbtn(),
+            ]),
+          ),
+        ));
+  }
+
+  takePhoto(BuildContext context) async {
+    final PickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (PickedFile != null) {
+      var tempimg = PickedFile.path;
+      BlocProvider.of<UpdateImageBloc>(context)
+          .add(UpdatedImage(imagePath: tempimg));
+    }
   }
 }

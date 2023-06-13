@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hive_sample/bloc/addStudentScreen/bloc/add_image_bloc.dart';
 import 'package:hive_sample/bloc/home/home_bloc.dart';
+import 'package:hive_sample/bloc/search/bloc/search_bloc.dart';
+import 'package:hive_sample/bloc/update_image/bloc/update_image_bloc.dart';
 import 'package:hive_sample/db/models/data_model.dart';
 
 import 'presentation/Screens/home_screen.dart';
@@ -26,7 +28,9 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => HomeBloc()),
-        BlocProvider(create: (context) => AddImageBloc())
+        BlocProvider(create: (context) => AddImageBloc()),
+        BlocProvider(create: (context) => UpdateImageBloc()),
+        BlocProvider(create: (context) => SearchBloc())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

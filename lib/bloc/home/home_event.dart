@@ -17,7 +17,7 @@ class DeleteStudents extends HomeEvent {
 
 class UpdateStudents extends HomeEvent {
   final int stdId;
-  final StudentModel newValue;
+  final StudentModel newList;
 
-  UpdateStudents({required this.stdId, required this.newValue});
+  UpdateStudents({required this.stdId, required this.newList});
 }

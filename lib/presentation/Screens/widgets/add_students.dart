@@ -127,7 +127,7 @@ class AddStudent extends StatelessWidget {
     );
   }
 
-  Future<void> addStudentButtonClicked(BuildContext context) async {
+  addStudentButtonClicked(BuildContext context) async {
 //print('$_name $_age');final _name = _nameController.text.trim();
     final _name = _nameController.text.trim();
     final _age = _ageController.text.trim();

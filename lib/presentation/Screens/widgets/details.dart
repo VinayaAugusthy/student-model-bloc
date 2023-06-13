@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:hive_sample/db/models/data_model.dart';
 
-
 // ignore: must_be_immutable
 class Details extends StatelessWidget {
   final double coverHeight = 200;

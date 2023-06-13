@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,84 +15,84 @@ class ViewStudent extends StatelessWidget {
   // @override
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Student List'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const SearchStudent()));
-              },
-              icon: const Icon(Icons.search)),
-        ],
-      ),
-      body: SafeArea(
-        child: BlocBuilder<HomeBloc, HomeState>(
-          builder: (context, state) {
-            log('list rebuilded');
-            return ListView.separated(
-              itemBuilder: (ctx, index) {
-                var data = state.studentList[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    radius: 25,
-                    // backgroundColor: Colors.green,
-                    backgroundImage: FileImage(File(data.image)),
-                  ),
-                  title: Text(data.name),
-                  trailing: Wrap(
-                    spacing: 12,
-                    children: <Widget>[
-                      IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => UpdateStudent(index: data.id!),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.edit),
-                          color: Colors.blue),
-                      IconButton(
-                        onPressed: () {
-                          deleteAlert(context, index);
-                        },
-                        icon: const Icon(Icons.delete),
-                        color: Colors.red,
-                      ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (ctx) => Details(
-                          passId: index,
-                          passValue: data,
-                        ),
-                      ),
-                    );
+    getAllStudents();
+
+    return BlocBuilder<HomeBloc, HomeState>(
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Student List'),
+            centerTitle: true,
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SearchStudent()));
                   },
-                );
-              },
-              separatorBuilder: (context, index) {
-                return const Divider();
-              },
-              itemCount: state.studentList.length,
-            );
-          },
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => AddStudent()));
-        },
-        child: const Icon(Icons.add),
-      ),
+                  icon: const Icon(Icons.search)),
+            ],
+          ),
+          body: ListView.separated(
+            itemBuilder: (ctx, index) {
+              var data = state.studentList[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  radius: 25,
+                  // backgroundColor: Colors.green,
+                  backgroundImage: FileImage(File(data.image)),
+                ),
+                title: Text(data.name),
+                trailing: Wrap(
+                  spacing: 12,
+                  children: <Widget>[
+                    IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  UpdateStudent(index: index, passValue: data),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit),
+                        color: Colors.blue),
+                    IconButton(
+                      onPressed: () {
+                        deleteAlert(context, index);
+                      },
+                      icon: const Icon(Icons.delete),
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (ctx) => Details(
+                        passId: index,
+                        passValue: data,
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            separatorBuilder: (context, index) {
+              return const Divider();
+            },
+            itemCount: state.studentList.length,
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => AddStudent()));
+            },
+            child: const Icon(Icons.add),
+          ),
+        );
+      },
     );
   }
 
