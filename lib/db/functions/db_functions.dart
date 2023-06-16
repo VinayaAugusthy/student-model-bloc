@@ -12,8 +12,7 @@ addStudents(StudentModel student, BuildContext context) {
   final studentDB = Hive.box<StudentModel>('student_db');
   BlocProvider.of<HomeBloc>(context).add(AddStudents(list: student));
   studentDB.add(student);
-  // listStudents.id = _id;
-  getAllStudents();
+  // getAllStudents();
 }
 
 getAllStudents() {

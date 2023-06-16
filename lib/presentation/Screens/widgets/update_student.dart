@@ -5,7 +5,6 @@ import 'package:hive_sample/presentation/Screens/widgets/view_students.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-
 import '../../../db/functions/db_functions.dart';
 import '../../../db/models/data_model.dart';
 
@@ -13,11 +12,7 @@ String tempimg = '';
 
 // ignore: must_be_immutable
 class UpdateStudent extends StatefulWidget {
-  UpdateStudent(
-      {Key? key,
-      // required this.passValue01,
-      required this.index,
-      required this.passValue})
+  UpdateStudent({Key? key, required this.index, required this.passValue})
       : super(key: key);
 
   StudentModel passValue;
@@ -38,21 +33,10 @@ class _UpdateStudentState extends State<UpdateStudent> {
 
   String? imagePath;
 
-  // final ImagePicker _picker = ImagePicker();
-
-//function or widget==================================================
-
   Future<void> StudentAddBtn(int index) async {
     final name = _nameController.text.trim();
     final age = _ageController.text.trim();
     final number = _numController.text.trim();
-
-    // final _image = imagePath;
-
-    // if (name.isEmpty) {
-    //   return;F
-    // }
-
     final _students = StudentModel(
       name: name,
       age: age,
@@ -78,8 +62,9 @@ class _UpdateStudentState extends State<UpdateStudent> {
     );
   }
 
-  Widget textFieldName(
-      {required TextEditingController myController, required String hintName}) {
+  Widget textFieldName({
+    required TextEditingController myController,
+  }) {
     return TextFormField(
       autofocus: false,
       controller: myController,
@@ -91,7 +76,7 @@ class _UpdateStudentState extends State<UpdateStudent> {
         border: OutlineInputBorder(
             borderSide: BorderSide.none,
             borderRadius: BorderRadius.circular(50)),
-        hintText: hintName,
+        // hintText: hintName,
         // counterText: myController.text
       ),
       // initialValue: 'hintName',
@@ -114,16 +99,18 @@ class _UpdateStudentState extends State<UpdateStudent> {
           },
         ),
         Positioned(
-            bottom: 2,
-            right: 10,
-            child: InkWell(
-                child: const Icon(
-                  Icons.add_a_photo_rounded,
-                  size: 30,
-                ),
-                onTap: () {
-                  takePhoto(context);
-                })),
+          bottom: 2,
+          right: 10,
+          child: InkWell(
+            child: const Icon(
+              Icons.add_a_photo_rounded,
+              size: 30,
+            ),
+            onTap: () {
+              takePhoto(context);
+            },
+          ),
+        ),
       ],
     );
   }
@@ -142,11 +129,11 @@ class _UpdateStudentState extends State<UpdateStudent> {
             child: Column(children: <Widget>[
               dpImage(),
               szdBox,
-              textFieldName(myController: _nameController, hintName: 'name'),
+              textFieldName(myController: _nameController),
               szdBox,
-              textFieldName(myController: _ageController, hintName: 'age'),
+              textFieldName(myController: _ageController),
               szdBox,
-              textFieldName(myController: _numController, hintName: 'number'),
+              textFieldName(myController: _numController),
               szdBox,
               elavatedbtn(),
             ]),
